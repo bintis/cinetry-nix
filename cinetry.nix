@@ -111,11 +111,17 @@ stdenv.mkDerivation {
     # script gets installed at $out/opt/cinetry/cinetry and the real ELF is
     # renamed to .cinetry-wrapped, which autoPatchelf then patches.
     # XDG_DATA_DIRS lets GTK find icon themes and GSettings schemas;
-    # LD_LIBRARY_PATH gives mdk access to host GPU drivers (Mesa libGL,
-    # VAAPI, etc.).
+    # LD_LIBRARY_PATH must put /opt/cinetry/lib first so transitive deps
+    # of bundled plugins (libmdk → libavformat from libffmpeg.so.8) resolve
+    # against the bundled versions — relying on RUNPATH alone makes some
+    # plugins pick up nix-store libs and breaks Cinetry's init order, the
+    # same way AppImage works by prepending $APPDIR/usr/bin/lib.
+    # driverLink/lib also goes in for mdk access to host GPU drivers
+    # (Mesa libGL, VAAPI, etc.).
     wrapProgram $out/opt/cinetry/cinetry \
       --prefix XDG_DATA_DIRS    :  "$XDG_ICON_DIRS:$GSETTINGS_SCHEMAS_PATH" \
       --prefix LD_LIBRARY_PATH  :  ${addDriverRunpath.driverLink}/lib \
+      --prefix LD_LIBRARY_PATH  :  "$out/opt/cinetry/lib" \
       ${lib.optionalString (
         commandLineArgs != ""
       ) "--add-flags ${lib.escapeShellArg commandLineArgs}"}
