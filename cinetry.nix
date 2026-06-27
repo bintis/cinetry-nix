@@ -38,13 +38,13 @@
 let
   sources = {
     x86_64-linux = fetchurl {
-      url = "https://github.com/gstory0404/Cinetry/releases/download/0.8.2/Cinetry_0.8.2%2B46_linux.deb";
-      sha256 = "sha256-6US2qtNRempDB2CmikTWN1SNr3ahTrxeKrdJMz6HCOI=";
+      url = "https://github.com/gstory0404/Cinetry/releases/download/0.8.3/Cinetry_0.8.3%2B47_linux.deb";
+      sha256 = "sha256-1IEXZa9aaWG8AzLGmFpDxJaml8pJ8fiVm4ctNxt7ebY=";
     };
   };
 in
 stdenv.mkDerivation {
-  version = "0.8.2";
+  version = "0.8.3";
   pname = "cinetry";
 
   src =
